@@ -31,10 +31,10 @@ public class StudentUpdateServlet extends HttpServlet {
 		Student student = studentRepository.getStudentById(id);
 		request.setAttribute("student", student);
 
-		RequestDispatcher rd = request.getRequestDispatcher("/student/register.jsp");
-		rd.forward(request, response);
+//		RequestDispatcher rd = request.getRequestDispatcher("/student/register.jsp");
+//		rd.forward(request, response);
 
-
+		request.setAttribute("view", "/student/register.jsp");
 	}
 
 	@Override
@@ -60,6 +60,7 @@ public class StudentUpdateServlet extends HttpServlet {
 
 		Student student = new Student(id, name, gender, age);
 		studentRepository.update(student);
-		response.sendRedirect("/student/view?id="+id);
+//		response.sendRedirect("/student/view?id="+id);
+		request.setAttribute("view", "redirect:/student/view.do?id="+id);
 	}
 }
