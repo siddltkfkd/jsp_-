@@ -33,9 +33,10 @@ public class StudentViewServlet extends HttpServlet {
 
 		request.setAttribute("student", student);
 
-		RequestDispatcher rd = request.getRequestDispatcher("/student/view.jsp");
-		rd.forward(request, response);
+//		RequestDispatcher rd = request.getRequestDispatcher("/student/view.jsp");
+//		rd.forward(request, response);
 
+		request.setAttribute("view", "/student/view.jsp");
 	}
 
 }

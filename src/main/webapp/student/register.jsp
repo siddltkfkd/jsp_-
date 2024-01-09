@@ -18,10 +18,10 @@
 <body>
 <c:choose>
     <c:when test="${empty student}">
-        <c:set var="action" value="/student/register?id=${student.id}"></c:set>
+        <c:set var="action" value="/student/register.do"></c:set>
     </c:when>
     <c:otherwise>
-        <c:set var="action" value="/student/update?=id=${student.id}"></c:set>
+        <c:set var="action" value="/student/update.do"></c:set>
     </c:otherwise>
 </c:choose>
 
@@ -40,7 +40,7 @@
             <th>성별</th>
             <td>
                 <input type="radio" name="gender" value="M" ${student.gender eq 'M' ? 'checked' : '' } />남
-                <input type="radio" name="gender" value="M" ${student.gender eq 'F' ? 'checked' : '' } />여
+                <input type="radio" name="gender" value="F" ${student.gender eq 'F' ? 'checked' : '' } />여
             </td>
         </tr>
         <tr>
