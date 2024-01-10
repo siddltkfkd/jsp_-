@@ -8,15 +8,18 @@ public class Student {
 	private String name;
 	private  Gender gender;
 	private  int age;
-	private Date createdAt;
+	private LocalDateTime createdAt;
+
+	public Student(){}
 
 	public Student(String id, String name, Gender gender, int age){
 		this.id = id;
 		this.name = name;
 		this.gender = gender;
 		this.age = age;
-		this.createdAt = new Date();
+		this.createdAt = LocalDateTime.now();
 	}
+
 	public String getId(){
 		return id;
 	}
@@ -29,12 +32,7 @@ public class Student {
 	public int getAge(){
 		return age;
 	}
-	public Date getCreatedAt(){
+	public LocalDateTime getCreatedAt(){
 		return createdAt;
-	}
-
-	@Override
-	public String toString(){
-		return "id : " + id + ", name : " + name + ", gender : " + gender + ", age : " + age + ", createdAt : " + createdAt;
 	}
 }

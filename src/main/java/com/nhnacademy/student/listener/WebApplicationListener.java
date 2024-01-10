@@ -1,8 +1,8 @@
 package com.nhnacademy.student.listener;
 
 import com.nhnacademy.student.Gender;
-import com.nhnacademy.student.repository.MapStudentRepository;
 import com.nhnacademy.student.Student;
+import com.nhnacademy.student.repository.JsonStudentRepository;
 import com.nhnacademy.student.repository.StudentRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,7 +17,7 @@ public class WebApplicationListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		ServletContext servletContext = event.getServletContext();
-		StudentRepository studentRepository = new MapStudentRepository();
+		StudentRepository studentRepository = new JsonStudentRepository();
 
 		for (int i=0; i<10; i++) {
 			Student student = new Student(String.valueOf(i), "학생 "+i, Gender.M, ((int)(Math.random()*3 + 12)));

@@ -7,9 +7,9 @@ import javax.servlet.http.HttpServletResponse;
 
 public class StudentDeleteController implements Command {
 	@Override
-	public String execute(HttpServletRequest req, HttpServletResponse resp) {
-		StudentRepository studentRepository = (StudentRepository) req.getServletContext().getAttribute("studentRepository");
-		String id = req.getParameter("id");
+	public String execute(HttpServletRequest request, HttpServletResponse response) {
+		StudentRepository studentRepository = (StudentRepository) request.getServletContext().getAttribute("studentRepository");
+		String id = request.getParameter("id");
 		studentRepository.deleteById(id);
 		//view return
 		return "redirect:/student/list.do";
