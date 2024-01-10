@@ -53,21 +53,21 @@ public class FrontServlet extends HttpServlet {
 	private Command resolveCommand(String servletPath, String method){
 		Command command = null;
 
-		if(servletPath.equals("/student/delete.do") && method.equalsIgnoreCase("POST")){
+		if(servletPath.contains("/student/delete.do") && method.equalsIgnoreCase("POST")){
 			command = new StudentDeleteController();
-		} else if(servletPath.equals("/student/list.do") && method.equalsIgnoreCase("GET")){
+		} else if(servletPath.contains("/student/list.do") && method.equalsIgnoreCase("GET")){
 			command = new StudentListController();
-		} else if (servletPath.equals("/student/register.do") && method.equalsIgnoreCase("GET")){
+		} else if (servletPath.contains("/student/register.do") && method.equalsIgnoreCase("GET")){
 			command = new StudentRegisterController();
-		} else if (servletPath.equals("/student/register.do") && method.equalsIgnoreCase("POST")){
+		} else if (servletPath.contains("/student/register.do") && method.equalsIgnoreCase("POST")){
 			command = new StudentRegisterFormController();
-		} else if (servletPath.equals("/student/update.do") && method.equalsIgnoreCase("GET")){
+		} else if (servletPath.contains("/student/update.do") && method.equalsIgnoreCase("GET")){
 			command = new StudentUpdateController();
-		} else if (servletPath.equals("/student/update.do") && method.equalsIgnoreCase("POST")){
+		} else if (servletPath.contains("/student/update.do") && method.equalsIgnoreCase("POST")){
 			command = new StudentUpdateFormController();
-		} else if (servletPath.equals("/student/view.do") && method.equalsIgnoreCase("GET")){
+		} else if (servletPath.contains("/student/view.do") && method.equalsIgnoreCase("GET")){
 			command = new StudentViewController();
-		} else if (servletPath.equals("/error")){
+		} else if (servletPath.contains("/error")){
 			command = new ErrorController();
 		}
 
