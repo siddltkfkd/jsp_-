@@ -1,15 +1,16 @@
 package com.nhnacademy.student;
 
+import com.nhnacademy.student.controller.*;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Objects;
+
+import static com.nhnacademy.student.RequestDispatcher.*;
 
 @Slf4j
 @WebServlet(name = "frontServlet", urlPatterns = "*.do")
@@ -19,59 +20,58 @@ public class FrontServlet extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		response.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html");
 
-		try{
-			//실제 요청 처리할 servlet을 결정
-			String servletPath = resolveServlet(request.getServletPath());
-			log.info("path : {}", servletPath);
-			RequestDispatcher rd;
+		try {
+			// 실제 로직을 처리할 Command(Controller) 결정, String view = command.execute() ...
+			Command command = resolveCommand(request.getServletPath(), request.getMethod());
+			String view = command.execute(request, response);
 
-			// 실제 요청을 처리할 서블릿으로 요청 전달
-			if (Objects.nonNull(servletPath)){
-				rd = request.getRequestDispatcher(servletPath);
-				rd.include(request, response);
-			}
-
-			//실제 요청을 처리한 servlet이 'view'라는 request 속성값으로 view를 전달해 줌.
-			String view = (String) request.getAttribute("view");
-			log.info("view : {}", view);
 			if (view.startsWith(REDIRECT_PREFIX)) {
-				String redirect_url = view.substring(REDIRECT_PREFIX.length()+1);
-				log.info("redirect-url : {}", redirect_url);
-				response.sendRedirect(redirect_url);
-
+				log.info("redirect-url : {}", view.substring(REDIRECT_PREFIX.length() + 1));
+				response.sendRedirect(view.substring(REDIRECT_PREFIX.length()+1));
 			} else {
-				rd = request.getRequestDispatcher(view);
+				// redirect 아니면 JSP에게 view 처리를 위임하여 그 결과를 include 처리.
+				javax.servlet.RequestDispatcher rd = request.getRequestDispatcher(view);
 				rd.include(request, response);
-
-
 			}
-		}catch(Exception ex){
-			log.error("", ex);
-			request.setAttribute("exception", ex);
-			RequestDispatcher rd = request.getRequestDispatcher("/error.jsp");
-			rd.include(request, response);
+		}catch (Exception ex){
+			//공통 error 처리
+			request.setAttribute("status_code", request.getAttribute(ERROR_STATUS_CODE));
+			request.setAttribute("exception_type", request.getAttribute(ERROR_EXCEPTION_TYPE));
+			request.setAttribute("message", request.getAttribute(ERROR_MESSAGE));
+			request.setAttribute("exception", request.getAttribute(ERROR_EXCEPTION));
+			request.setAttribute("request_uri", request.getAttribute(ERROR_REQUEST_URI));
+			log.error("status_code:{}", request.getAttribute(ERROR_STATUS_CODE));
+			javax.servlet.RequestDispatcher rd = request.getRequestDispatcher("/error.jsp");
+			rd.forward(request,response);
 		}
+
 	}
 
-	private String resolveServlet(String servletPath){
-		String processingServlet = null;
-		if(servletPath.contains("/student/list.do")){
-			processingServlet = servletPath.replace("/student/list.do", "/student/list");
-		} else if(servletPath.contains("/student/view.do")) {
-			processingServlet = servletPath.replace("/student/view.do", "/student/view");
-		} else if(servletPath.contains("student/delete.do")) {
-			processingServlet = servletPath.replace("/student/delete.do", "/student/delete");
-		} else if(servletPath.contains("student/register.do")) {
-			processingServlet = servletPath.replace("/student/register.do", "/student/register");
-		} else if(servletPath.contains("student/update.do")) {
-			processingServlet = servletPath.replace("/student/update.do", "/student/update");
-		} else{
-			log.info("servlet Path : {}", servletPath);
+	private Command resolveCommand(String servletPath, String method){
+		Command command = null;
+
+		if(servletPath.equals("/student/delete.do") && method.equalsIgnoreCase("POST")){
+			command = new StudentDeleteController();
+		} else if(servletPath.equals("/student/list.do") && method.equalsIgnoreCase("GET")){
+			command = new StudentListController();
+		} else if (servletPath.equals("/student/register.do") && method.equalsIgnoreCase("GET")){
+			command = new StudentRegisterController();
+		} else if (servletPath.equals("/student/register.do") && method.equalsIgnoreCase("POST")){
+			command = new StudentRegisterFormController();
+		} else if (servletPath.equals("/student/update.do") && method.equalsIgnoreCase("GET")){
+			command = new StudentUpdateController();
+		} else if (servletPath.equals("/student/update.do") && method.equalsIgnoreCase("POST")){
+			command = new StudentUpdateFormController();
+		} else if (servletPath.equals("/student/view.do") && method.equalsIgnoreCase("GET")){
+			command = new StudentViewController();
+		} else if (servletPath.equals("/error")){
+			command = new ErrorController();
 		}
-		return processingServlet;
+
+		return command;
 	}
 
 }
